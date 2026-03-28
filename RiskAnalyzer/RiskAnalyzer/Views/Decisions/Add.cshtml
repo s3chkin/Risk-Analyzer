@@ -1,0 +1,38 @@
+﻿@model RiskAnalyzer.Models.InputDecisionsModel
+
+<div class="container mt-4">
+    <div class="card shadow border-primary" style="max-width: 600px; margin: auto;">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Оценка на Рисков Сценарий</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Add" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Избери Сценарий</label>
+                    <select asp-for="ScenarioId" asp-items="Model.Scenarios" class="form-select">
+                        <option value="">-- Избери инцидент --</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Критерий за оценка</label>
+                    <select asp-for="CriterionId" asp-items="Model.Criteria" class="form-select">
+                        <option value="">-- Избери по какво оценяваш --</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Оценка на влиянието (1-10)</label>
+                    <input asp-for="Score" type="range" class="form-range" min="1" max="10" step="1" oninput="this.nextElementSibling.value = this.value">
+                    <output class="fw-bold text-primary">5</output>
+                    <div class="form-text">1 = Минимално, 10 = Критично</div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">Запиши и Изчисли</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Назад към списъка</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

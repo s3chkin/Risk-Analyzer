@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RiskAnalyzer.Data;
 
@@ -11,9 +12,11 @@ using RiskAnalyzer.Data;
 namespace RiskAnalyzer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328143149_AddNewPropsOnDecisions")]
+    partial class AddNewPropsOnDecisions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,7 +262,7 @@ namespace RiskAnalyzer.Data.Migrations
                     b.ToTable("Criteria");
                 });
 
-            modelBuilder.Entity("RiskAnalyzer.Data.Models.Decision", b =>
+            modelBuilder.Entity("RiskAnalyzer.Data.Models.Decisions", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -302,7 +305,7 @@ namespace RiskAnalyzer.Data.Migrations
                     b.ToTable("Decisions");
                 });
 
-            modelBuilder.Entity("RiskAnalyzer.Data.Models.RiskType", b =>
+            modelBuilder.Entity("RiskAnalyzer.Data.Models.RiskTypes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,7 +326,7 @@ namespace RiskAnalyzer.Data.Migrations
                     b.ToTable("RiskTypes");
                 });
 
-            modelBuilder.Entity("RiskAnalyzer.Data.Models.Scenario", b =>
+            modelBuilder.Entity("RiskAnalyzer.Data.Models.Scenarios", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -423,7 +426,7 @@ namespace RiskAnalyzer.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RiskAnalyzer.Data.Models.Decision", b =>
+            modelBuilder.Entity("RiskAnalyzer.Data.Models.Decisions", b =>
                 {
                     b.HasOne("RiskAnalyzer.Data.Models.Criteria", "Criterion")
                         .WithMany()
@@ -435,7 +438,7 @@ namespace RiskAnalyzer.Data.Migrations
                         .WithMany("Decisions")
                         .HasForeignKey("DecidedByUserId");
 
-                    b.HasOne("RiskAnalyzer.Data.Models.Scenario", "Scenario")
+                    b.HasOne("RiskAnalyzer.Data.Models.Scenarios", "Scenario")
                         .WithMany()
                         .HasForeignKey("ScenarioId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -448,9 +451,9 @@ namespace RiskAnalyzer.Data.Migrations
                     b.Navigation("Scenario");
                 });
 
-            modelBuilder.Entity("RiskAnalyzer.Data.Models.Scenario", b =>
+            modelBuilder.Entity("RiskAnalyzer.Data.Models.Scenarios", b =>
                 {
-                    b.HasOne("RiskAnalyzer.Data.Models.RiskType", "RiskType")
+                    b.HasOne("RiskAnalyzer.Data.Models.RiskTypes", "RiskType")
                         .WithMany("Scenarios")
                         .HasForeignKey("RiskTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -470,7 +473,7 @@ namespace RiskAnalyzer.Data.Migrations
                     b.Navigation("Roles");
                 });
 
-            modelBuilder.Entity("RiskAnalyzer.Data.Models.RiskType", b =>
+            modelBuilder.Entity("RiskAnalyzer.Data.Models.RiskTypes", b =>
                 {
                     b.Navigation("Scenarios");
                 });

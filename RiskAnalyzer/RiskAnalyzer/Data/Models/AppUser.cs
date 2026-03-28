@@ -16,6 +16,6 @@ namespace RiskAnalyzer.Data.Models
         public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
-        public virtual ICollection<Decisions> Decisions { get; set; } = new HashSet<Decisions>(); //КОИ РЕШЕНИЯ Е ВЗЕЛ ДАДЕН ПОТРЕБИТЕЛ
+        public virtual ICollection<Decision> Decisions { get; set; } = new HashSet<Decision>(); //КОИ РЕШЕНИЯ Е ВЗЕЛ ДАДЕН ПОТРЕБИТЕЛ
     }
 }

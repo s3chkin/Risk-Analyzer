@@ -33,7 +33,7 @@ namespace RiskAnalyzer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var riskType = new RiskTypes
+                var riskType = new RiskType
                 {
                     Name = model.Name,
                     Description = model.Description

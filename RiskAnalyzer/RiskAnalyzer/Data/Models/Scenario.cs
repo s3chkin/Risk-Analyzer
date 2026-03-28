@@ -1,6 +1,6 @@
 ﻿namespace RiskAnalyzer.Data.Models
 {
-    public class Scenarios
+    public class Scenario
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -10,6 +10,6 @@
         public string Status { get; set; }
 
         public int RiskTypeId { get; set; } 
-        public virtual RiskTypes RiskType { get; set; } 
+        public virtual RiskType RiskType { get; set; } 
     }
 }

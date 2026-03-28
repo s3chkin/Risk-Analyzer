@@ -6,10 +6,10 @@ namespace RiskAnalyzer.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<AppUser>(options)
     {
-        public DbSet<Scenarios> Scenarios { get; set; }
-        public DbSet<Decisions> Decisions { get; set; }
+        public DbSet<Scenario> Scenarios { get; set; }
+        public DbSet<Decision> Decisions { get; set; }
         public DbSet<Criteria> Criteria { get; set; }
-        public DbSet<RiskTypes> RiskTypes { get; set; }
+        public DbSet<RiskType> RiskTypes { get; set; }
         public DbSet<AppUser> AppUser { get; set; }
 
 

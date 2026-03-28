@@ -47,7 +47,7 @@ namespace RiskAnalyzer.Controllers
         public IActionResult Add(InputScenariosModel model)
         {
             
-                var scenario = new Scenarios
+                var scenario = new Scenario
                 {
                     Title = model.Title,
                     Description = model.Description,

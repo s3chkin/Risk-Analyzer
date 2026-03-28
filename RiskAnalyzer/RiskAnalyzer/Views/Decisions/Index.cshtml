@@ -1,0 +1,38 @@
+﻿@model IEnumerable<RiskAnalyzer.Models.InputDecisionsModel>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Анализ и Оценки (Decisions)</h2>
+        <a asp-action="Add" class="btn btn-primary">Нова Оценка</a>
+    </div>
+
+    <table class="table table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Сценарий</th>
+                <th>Критерий</th>
+                <th>Оценка (1-10)</th>
+                <th>Изчислен Риск</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.ScenarioTitle</strong></td>
+                    <td>@item.CriterionName</td>
+                    <td><span class="badge bg-secondary">@item.Score</span></td>
+                    <td>
+                        <span class="badge @(item.CalculatedValue > 50 ? "bg-danger" : "bg-warning text-dark")">
+                            @item.CalculatedValue
+                        </span>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger" onclick="return confirm('Изтриване?')">Изтрий</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
