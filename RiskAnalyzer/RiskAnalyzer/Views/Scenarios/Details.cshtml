@@ -1,0 +1,44 @@
+﻿@model RiskAnalyzer.Models.InputScenariosModel
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Детайли за сценарий: @Model.Title</h3>
+            <span class="badge bg-light text-dark">ID: @Model.Id</span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-sm-3 fw-bold">Локация:</div>
+                <div class="col-sm-9">@Model.Location</div>
+            </div>
+            <hr />
+            <div class="row mb-3">
+                <div class="col-sm-3 fw-bold">Тип на риска:</div>
+                <div class="col-sm-9"><span class="badge bg-warning text-dark">@Model.RiskTypeName</span></div>
+            </div>
+            <hr />
+            <div class="row mb-3">
+                <div class="col-sm-3 fw-bold">Описание:</div>
+                <div class="col-sm-9 text-muted">@Model.Description</div>
+            </div>
+            <hr />
+            <div class="row mb-3">
+                <div class="col-sm-3 fw-bold">Дата на създаване:</div>
+                <div class="col-sm-9">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+            </div>
+            <hr />
+            <div class="row mb-3">
+                <div class="col-sm-3 fw-bold">Текущ статус:</div>
+                <div class="col-sm-9">
+                    <span class="badge @(Model.Status == "New" ? "bg-primary" : "bg-success")">
+                        @Model.Status
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактирай</a>
+            <a asp-action="Index" class="btn btn-secondary">Обратно към списъка</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<InputScenariosModel>
+<a asp-action="Add" class="btn btn-primary">Нов Сценарий</a>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Заглавие</th>
+            <th>Локация</th>
+            <th>Тип</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Location</td>
+                <td>@item.RiskTypeName</td>
+                <td><span class="badge bg-info">@item.Status</span></td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редактирай</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Детайли</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Сигурен ли си?')">Изтрий</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
