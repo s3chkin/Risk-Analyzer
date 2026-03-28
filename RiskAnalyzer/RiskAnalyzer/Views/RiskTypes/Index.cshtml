@@ -1,0 +1,50 @@
+﻿@model List<RiskAnalyzer.Models.InputRiskTypesModel>
+
+<div class="d-flex justify-content-center">
+	<p>
+		<a asp-action="Add" class="btn btn-warning">Добави нов риск</a>
+	</p>
+</div>
+<br>
+<div class="d-flex justify-content-center">
+	<table class="table" style="margin-left: 200px; margin-right:200px; ">
+		<thead>
+			<tr>
+				<th>
+					Име
+				</th>
+                
+				<th>
+					Опции
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+                   
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.Id">
+							<button class=" btn btn-success" style="margin-left:5px; margin-right:5px;">
+								<i class="requestEditBtn fa-solid fa-pencil float-left" style="color:white;"></i>
+							</button>
+						</a>
+
+						<a asp-action="Delete" asp-route-id="@item.Id">
+							<button class="btn btn-danger">
+								<i class="requestDeleteBtn fa-solid fa-trash-can float-left" style="  color:white;"></i>
+							</button>
+						</a>
+					</td>
+                    
+				</tr>
+			}
+		</tbody>
+	</table>
+
+</div>

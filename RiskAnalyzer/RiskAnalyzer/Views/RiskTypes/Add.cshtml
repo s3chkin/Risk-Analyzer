@@ -1,0 +1,38 @@
+﻿@model RiskAnalyzer.Models.InputRiskTypesModel
+
+<div class="d-flex justify-content-center">
+    <div>
+        <h4 class="d-flex justify-content-center">Добавяне на категория</h4>
+        <br>
+        <div>
+            <div>
+                <form asp-action="Add">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Тип риск:</label>
+                        <input asp-for="Name" placeholder="напр. „Екологична катастрофа“" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">Описание:</label>
+                        <input asp-for="Description" placeholder="Опишете риска" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <br>
+
+                    <div class="d-flex justify-content-center">
+                        <div>
+                            <input type="submit" value="Добави" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center">
+            <a asp-action="Index" class="btn btn-warning">Обратно към списъка с рискове</a>
+        </div>
+    </div>
+</div>
