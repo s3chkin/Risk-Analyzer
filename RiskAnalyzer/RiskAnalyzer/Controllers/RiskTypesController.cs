@@ -37,25 +37,27 @@ namespace RiskAnalyzer.Controllers
 
         public IActionResult Add()
         {
-            return View();
+            return View(new InputRiskTypesModel());
         }
 
         [HttpPost]
         public IActionResult Add(InputRiskTypesModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var riskType = new RiskType
-                {
-                    Name = model.Name,
-                    Description = model.Description,
-                    CreatedByUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                };
-                db.RiskTypes.Add(riskType);
-                db.SaveChanges();
-
+                return View(model);
             }
-            return this.RedirectToAction("Index");
+
+            var riskType = new RiskType
+            {
+                Name = model.Name,
+                Description = model.Description,
+                CreatedByUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            };
+            db.RiskTypes.Add(riskType);
+            db.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id)
@@ -81,22 +83,25 @@ namespace RiskAnalyzer.Controllers
         [HttpPost]
         public IActionResult Edit(InputRiskTypesModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var riskType = db.RiskTypes.FirstOrDefault(rt => rt.Id == model.Id);
-                if (riskType == null)
-                {
-                    return NotFound();
-                }
-
-                if (!DeleteAuthorization.UserMayEdit(User, riskType.CreatedByUserId))
-                    return Forbid();
-
-                riskType.Name = model.Name;
-                riskType.Description = model.Description;
-                db.SaveChanges();
+                return View(model);
             }
-            return this.RedirectToAction("Index");
+
+            var riskType = db.RiskTypes.FirstOrDefault(rt => rt.Id == model.Id);
+            if (riskType == null)
+            {
+                return NotFound();
+            }
+
+            if (!DeleteAuthorization.UserMayEdit(User, riskType.CreatedByUserId))
+                return Forbid();
+
+            riskType.Name = model.Name;
+            riskType.Description = model.Description;
+            db.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Delete(int id)

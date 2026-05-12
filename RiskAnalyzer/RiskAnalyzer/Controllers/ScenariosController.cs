@@ -45,7 +45,7 @@ namespace RiskAnalyzer.Controllers
             {
                 RiskTypes = GetRiskTypes(),
                 Status = "Нов",
-                CreatedAt = DateTime.Now
+                CreatedAt = TruncateToMinute(DateTime.Now)
             };
             return View(model);
         }
@@ -53,6 +53,8 @@ namespace RiskAnalyzer.Controllers
         [HttpPost]
         public IActionResult Add(InputScenariosModel model)
         {
+            model.CreatedAt = TruncateToMinute(model.CreatedAt);
+
             if (!ModelState.IsValid)
             {
                 model.RiskTypes = GetRiskTypes();
@@ -119,7 +121,7 @@ namespace RiskAnalyzer.Controllers
                 Title = scenario.Title,
                 Description = scenario.Description,
                 Location = scenario.Location,
-                CreatedAt = scenario.CreatedAt,
+                CreatedAt = TruncateToMinute(scenario.CreatedAt),
                 Status = scenario.Status,
                 RiskTypeId = scenario.RiskTypeId
             };
@@ -131,6 +133,8 @@ namespace RiskAnalyzer.Controllers
         [HttpPost]
         public IActionResult Edit(InputScenariosModel model)
         {
+            model.CreatedAt = TruncateToMinute(model.CreatedAt);
+
             if (!ModelState.IsValid)
             {
                 model.RiskTypes = GetRiskTypes();
@@ -181,6 +185,14 @@ namespace RiskAnalyzer.Controllers
                     Text = rt.Name
                 })
                 .ToList();
+        }
+
+        /// <summary>
+        /// <c>datetime-local</c> с <c>step="60"</c> изисква стойност без секунди; иначе браузърът блокира изпращането.
+        /// </summary>
+        private static DateTime TruncateToMinute(DateTime value)
+        {
+            return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
         }
     }
 }
