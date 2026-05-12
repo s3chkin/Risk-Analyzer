@@ -1,4 +1,4 @@
-﻿namespace RiskAnalyzer.Data.Models
+namespace RiskAnalyzer.Data.Models
 {
     public class RiskType
     {
@@ -6,5 +6,8 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public List<Scenario> Scenarios { get; set; } = new List<Scenario>();
+
+        public string? CreatedByUserId { get; set; }
+        public virtual AppUser? CreatedByUser { get; set; }
     }
 }

@@ -1,38 +1,90 @@
-﻿@model RiskAnalyzer.Models.InputDecisionsModel
+@model RiskAnalyzer.Models.InputDecisionsModel
 
-<div class="container mt-4">
-    <div class="card shadow border-primary" style="max-width: 600px; margin: auto;">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Оценка на Рисков Сценарий</h4>
-        </div>
-        <div class="card-body">
-            <form asp-action="Add" method="post">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Избери Сценарий</label>
-                    <select asp-for="ScenarioId" asp-items="Model.Scenarios" class="form-select">
-                        <option value="">-- Избери инцидент --</option>
-                    </select>
-                </div>
+@{
+    var initialScore = Model.Score is >= 1 and <= 10 ? Model.Score : 5;
+}
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Критерий за оценка</label>
-                    <select asp-for="CriterionId" asp-items="Model.Criteria" class="form-select">
-                        <option value="">-- Избери по какво оценяваш --</option>
-                    </select>
-                </div>
+<div class="page-content">
+    <div class="app-form-panel app-form-panel--wide">
+        <div class="card app-card shadow-sm">
+            <div class="card-header app-card__header">
+                <h2 class="h5 mb-0">Нова оценка по сценарий</h2>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted small mb-4">
+                    За <strong>един и същ сценарий</strong> обикновено добавяте <strong>отделна оценка за всеки критерий</strong>
+                    (напр. първо „Екологично въздействие“, после „Хора и имущество“ и т.н.).
+                    Една промяна = един избран критерий + колко е силно въздействието по него при този случай.
+                </p>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Оценка на влиянието (1-10)</label>
-                    <input asp-for="Score" type="range" class="form-range" min="1" max="10" step="1" oninput="this.nextElementSibling.value = this.value">
-                    <output class="fw-bold text-primary">5</output>
-                    <div class="form-text">1 = Минимално, 10 = Критично</div>
-                </div>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+                <form asp-action="Add" method="post" id="decisionAddForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Сценарий</label>
+                        <select asp-for="ScenarioId" asp-items="Model.Scenarios" class="form-select">
+                            <option value="">Изберете сценарий</option>
+                        </select>
+                        <span asp-validation-for="ScenarioId" class="text-danger small"></span>
+                    </div>
 
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-success btn-lg">Запиши и Изчисли</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary">Назад към списъка</a>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Критерий</label>
+                        <select asp-for="CriterionId" asp-items="Model.Criteria" class="form-select">
+                            <option value="">Изберете критерий</option>
+                        </select>
+                        <span asp-validation-for="CriterionId" class="text-danger small"></span>
+                        <div class="form-text">Тежестта на критерия задаваш при „Критерии“ в менюто; тук оценяваш само силата на случая по този критерий.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="decisionScoreRange">Сила на въздействие по този критерий (1–10)</label>
+                        <p class="small text-muted mb-2 mb-md-3">
+                            Това <strong>не е</strong> тежестта на критерия. Това е твоята субективна оценка:
+                            колко силно <em>този конкретен сценарий</em> засяга избрания критерий (1 = почти няма, 10 = много тежко).
+                            Системата умножава тази стойност по тежестта на критерия за „изчислен риск“ по реда.
+                        </p>
+                        <input asp-for="Score" type="range" class="form-range" min="1" max="10" step="1"
+                               id="decisionScoreRange"
+                               aria-valuemin="1" aria-valuemax="10" aria-describedby="decisionScoreHelp" />
+                        <div class="d-flex align-items-center gap-3 flex-wrap mt-2">
+                            <span class="fw-bold text-primary fs-4" id="decisionScoreDisplay" aria-live="polite">@initialScore</span>
+                            <span class="text-muted small" id="decisionScoreHelp">1 = минимално въздействие, 10 = критично</span>
+                        </div>
+                        <span asp-validation-for="Score" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Препоръчано действие <span class="text-muted fw-normal">(по избор)</span></label>
+                        <input asp-for="RecommendedAction" class="form-control" placeholder="Напр. евакуация, наблюдение…" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Бележки <span class="text-muted fw-normal">(по избор)</span></label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Обосновка и контекст"></textarea>
+                    </div>
+
+                    <div class="d-grid d-sm-flex gap-2 flex-sm-row-reverse flex-sm-wrap justify-content-sm-start">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">Запиши оценката</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Към списъка</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var range = document.getElementById('decisionScoreRange');
+            var display = document.getElementById('decisionScoreDisplay');
+            if (!range || !display) return;
+            function sync() {
+                display.textContent = range.value;
+            }
+            range.addEventListener('input', sync);
+            range.addEventListener('change', sync);
+            sync();
+        })();
+    </script>
+}

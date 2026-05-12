@@ -1,44 +1,52 @@
 ﻿@model RiskAnalyzer.Models.InputScenariosModel
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Детайли за сценарий: @Model.Title</h3>
-            <span class="badge bg-light text-dark">ID: @Model.Id</span>
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-sm-3 fw-bold">Локация:</div>
-                <div class="col-sm-9">@Model.Location</div>
-            </div>
-            <hr />
-            <div class="row mb-3">
-                <div class="col-sm-3 fw-bold">Тип на риска:</div>
-                <div class="col-sm-9"><span class="badge bg-warning text-dark">@Model.RiskTypeName</span></div>
-            </div>
-            <hr />
-            <div class="row mb-3">
-                <div class="col-sm-3 fw-bold">Описание:</div>
-                <div class="col-sm-9 text-muted">@Model.Description</div>
-            </div>
-            <hr />
-            <div class="row mb-3">
-                <div class="col-sm-3 fw-bold">Дата на създаване:</div>
-                <div class="col-sm-9">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
-            </div>
-            <hr />
-            <div class="row mb-3">
-                <div class="col-sm-3 fw-bold">Текущ статус:</div>
-                <div class="col-sm-9">
-                    <span class="badge @(Model.Status == "New" ? "bg-primary" : "bg-success")">
-                        @Model.Status
-                    </span>
+<div class="page-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card app-card shadow-sm">
+                <div class="card-header app-card__header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h2 class="h5 mb-0">@Model.Title</h2>
+                    <span class="badge bg-secondary">ID @Model.Id</span>
+                </div>
+                <div class="card-body p-4">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3 text-muted small text-uppercase">Локация</dt>
+                        <dd class="col-sm-9">@Model.Location</dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Тип риск</dt>
+                        <dd class="col-sm-9 pt-3"><span class="badge bg-warning text-dark">@Model.RiskTypeName</span></dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Описание</dt>
+                        <dd class="col-sm-9 pt-3">@Model.Description</dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Създаден</dt>
+                        <dd class="col-sm-9 pt-3">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Статус</dt>
+                        <dd class="col-sm-9 pt-3">
+                            <span class="badge @(Model.Status == "Нов" ? "bg-primary" : (Model.Status == "В процес" ? "bg-warning text-dark" : "bg-success"))">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Оценки</dt>
+                        <dd class="col-sm-9 pt-3">@Model.DecisionCount</dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Среден риск</dt>
+                        <dd class="col-sm-9 pt-3 fw-semibold">@Model.AverageCalculatedRisk.ToString("0.00")</dd>
+
+                        <dt class="col-sm-3 text-muted small text-uppercase pt-3">Последна оценка</dt>
+                        <dd class="col-sm-9 pt-3">@(Model.LastDecisionAt.HasValue ? Model.LastDecisionAt.Value.ToString("dd.MM.yyyy HH:mm") : "—")</dd>
+                    </dl>
+                </div>
+                <div class="card-footer d-flex flex-wrap gap-2 justify-content-end bg-transparent">
+                    @if (Model.CanEdit)
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редактирай</a>
+                    }
+                    <a asp-action="Index" class="btn btn-outline-secondary">Към списъка</a>
                 </div>
             </div>
-        </div>
-        <div class="card-footer text-end">
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактирай</a>
-            <a asp-action="Index" class="btn btn-secondary">Обратно към списъка</a>
         </div>
     </div>
 </div>

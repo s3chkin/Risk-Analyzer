@@ -1,56 +1,61 @@
 ﻿@model RiskAnalyzer.Models.InputScenariosModel
 
-<div class="container mt-4">
-    <div class="card shadow border-warning">
-        <div class="card-header bg-warning text-dark">
-            <h3 class="mb-0">Редактиране на сценарий #@Model.Id</h3>
-        </div>
-        <div class="card-body">
-            <form asp-action="Edit" method="post">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label font-weight-bold">Заглавие</label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
+<div class="page-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card app-card shadow-sm">
+                <div class="card-header app-card__header">
+                    <h2 class="h5 mb-0">Редактиране на сценарий <span class="text-muted fw-normal">#@Model.Id</span></h2>
                 </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Location" class="form-label">Локация</label>
-                        <input asp-for="Location" class="form-control" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="RiskTypeId" class="form-label">Тип на риска</label>
-                        <select asp-for="RiskTypeId" asp-items="Model.RiskTypes" class="form-select"></select>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-semibold">Заглавие</label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label">Описание</label>
-                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Location" class="form-label fw-semibold">Локация</label>
+                                <input asp-for="Location" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="RiskTypeId" class="form-label fw-semibold">Тип на риска</label>
+                                <select asp-for="RiskTypeId" asp-items="Model.RiskTypes" class="form-select"></select>
+                            </div>
+                        </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="CreatedAt" class="form-label">Дата</label>
-                        <input asp-for="CreatedAt" type="datetime-local" class="form-control" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Status" class="form-label">Статус</label>
-                        <select asp-for="Status" class="form-select">
-                            <option value="New">Нов</option>
-                            <option value="In Progress">В процес на анализ</option>
-                            <option value="Resolved">Разрешен</option>
-                        </select>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold">Описание</label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        </div>
 
-                <div class="mt-4 text-end">
-                    <button type="submit" class="btn btn-primary">Обнови данните</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary">Обратно към списъка</a>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CreatedAt" class="form-label fw-semibold">Дата и час</label>
+                                <input asp-for="CreatedAt" type="datetime-local" class="form-control" step="60" />
+                                <div class="form-text">Само дата и час (без секунди).</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Status" class="form-label fw-semibold">Статус</label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Нов">Нов</option>
+                                    <option value="В процес">В процес на анализ</option>
+                                    <option value="Приключен">Приключен</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 pt-2">
+                            <button type="submit" class="btn btn-primary px-4">Обнови</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Към списъка</a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

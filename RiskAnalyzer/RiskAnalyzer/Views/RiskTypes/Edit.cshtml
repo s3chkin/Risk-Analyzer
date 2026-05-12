@@ -1,38 +1,31 @@
-﻿@model RiskAnalyzer.Models.InputRiskTypesModel
+@model RiskAnalyzer.Models.InputRiskTypesModel
 
-<div class="d-flex justify-content-center">
-	<div>
-		<h4 class="d-flex justify-content-center">Редактиране</h4>
-		<br>
-		<div>
-			<div>
-				<form asp-action="Edit">
-					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-					<div class="d-flex justify-content-center">
-						<div class="container">
-							<div class="form-group">
-								<label asp-for="Name" class="control-label">Риск:</label>
-								<input asp-for="Name" class="form-control" />
-								<span asp-validation-for="Name" class="text-danger"></span>
-							</div>
-							<br>
-							<div class="form-group">
-								<label asp-for="Description" class="control-label">Описание:</label>
-								<input asp-for="Description" class="form-control" />
-								<span asp-validation-for="Description" class="text-danger"></span>
-							</div>
-						</div>
-					</div>
-					<br>
-
-					<div class="d-flex justify-content-center">
-						<div>
-							<input type="submit" value="Запази" class="btn btn-success" />
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<br>
-	</div>
+<div class="page-content">
+    <div class="app-form-panel">
+        <div class="card app-card shadow-sm">
+            <div class="card-header app-card__header">
+                <h2 class="h5 mb-0">Редактиране на тип риск</h2>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold">Име</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold">Описание</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary">Запази</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

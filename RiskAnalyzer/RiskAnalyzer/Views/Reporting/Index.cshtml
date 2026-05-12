@@ -1,0 +1,153 @@
+@model RiskAnalyzer.Models.ReportingViewModel
+
+<div class="page-content">
+    <header class="page-header">
+        <h1 class="page-header__title">Отчетност и анализ</h1>
+        <p class="page-header__lead">Обобщение по сценарии, филтри по статус и тип риск, последни оценки от екипа.</p>
+    </header>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-card__label">Сценарии</div>
+                <div class="stat-card__value">@Model.TotalScenarios</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-card__label">Критерии</div>
+                <div class="stat-card__value">@Model.TotalCriteria</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-card__label">Оценки</div>
+                <div class="stat-card__value">@Model.TotalDecisions</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__label">Среден риск</div>
+                <div class="stat-card__value">@Model.AverageRisk.ToString("0.00")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">Филтър по сценарии</div>
+        <div class="card-body">
+            <form method="get" asp-action="Index" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-muted text-uppercase">Статус</label>
+                    <select class="form-select" name="status">
+                        <option value="">Всички статуси</option>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            <option value="@status.Value" selected="@(status.Value == Model.SelectedStatus)">@status.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-muted text-uppercase">Тип риск</label>
+                    <select class="form-select" name="riskTypeId">
+                        <option value="">Всички типове</option>
+                        @foreach (var type in Model.RiskTypes)
+                        {
+                            <option value="@type.Value" selected="@(type.Value == Model.SelectedRiskTypeId?.ToString())">@type.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-primary">Приложи</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Изчисти</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>Сценарии — отчет</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped mb-0 app-table">
+                <thead>
+                    <tr>
+                        <th>Сценарий</th>
+                        <th>Тип риск</th>
+                        <th>Статус</th>
+                        <th>Брой оценки</th>
+                        <th>Среден риск</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ScenarioRows.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6" class="app-empty">Няма данни за избраните филтри.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var row in Model.ScenarioRows)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@row.Title</td>
+                                <td>@row.RiskTypeName</td>
+                                <td><span class="badge bg-secondary">@row.Status</span></td>
+                                <td>@row.DecisionsCount</td>
+                                <td>@row.AverageRisk.ToString("0.00")</td>
+                                <td class="text-end">
+                                    <a asp-controller="Scenarios" asp-action="Details" asp-route-id="@row.Id" class="btn btn-sm btn-outline-primary">Детайли</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">Последни оценки</div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 app-table">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Сценарий</th>
+                        <th>Критерий</th>
+                        <th>Оценка</th>
+                        <th>Изчислен риск</th>
+                        <th>Потребител</th>
+                        <th>Препоръка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.RecentDecisions.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="7" class="app-empty">Все още няма оценки.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var decision in Model.RecentDecisions)
+                        {
+                            <tr>
+                                <td class="text-nowrap">@decision.Timestamp.ToString("g")</td>
+                                <td class="fw-semibold">@decision.ScenarioTitle</td>
+                                <td>@decision.CriterionName</td>
+                                <td><span class="badge bg-secondary">@decision.Score</span></td>
+                                <td>@decision.CalculatedValue.ToString("0.00")</td>
+                                <td>@(string.IsNullOrWhiteSpace(decision.DecidedByUserName) ? "—" : decision.DecidedByUserName)</td>
+                                <td>@(string.IsNullOrWhiteSpace(decision.RecommendedAction) ? "—" : decision.RecommendedAction)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using RiskAnalyzer.Data.Models;
 
 namespace RiskAnalyzer.Models
 {
@@ -8,16 +8,30 @@ namespace RiskAnalyzer.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         [Required]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         [Required]
-        public string Location { get; set; }
+        public string Location { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string Status { get; set; } = "Нов";
+        [Range(1, int.MaxValue, ErrorMessage = "Избери валиден тип риск.")]
         public int RiskTypeId { get; set; }
-        [Required]
-        public string RiskTypeName { get; internal set; }
+        public string? RiskTypeName { get; set; }
         public List<SelectListItem> RiskTypes { get; set; } = new List<SelectListItem>();
+
+        // Полета за отчетност в детайли на сценарий
+        public int DecisionCount { get; set; }
+        public double AverageCalculatedRisk { get; set; }
+        public DateTime? LastDecisionAt { get; set; }
+
+        [BindNever]
+        public string? CreatedByUserId { get; set; }
+
+        [BindNever]
+        public bool CanDelete { get; set; }
+
+        [BindNever]
+        public bool CanEdit { get; set; }
     }
 }

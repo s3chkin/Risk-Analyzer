@@ -1,50 +1,50 @@
 ﻿@model List<RiskAnalyzer.Models.InputRiskTypesModel>
 
-<div class="d-flex justify-content-center">
-	<p>
-		<a asp-action="Add" class="btn btn-warning">Добави нов риск</a>
-	</p>
-</div>
-<br>
-<div class="d-flex justify-content-center">
-	<table class="table" style="margin-left: 200px; margin-right:200px; ">
-		<thead>
-			<tr>
-				<th>
-					Име
-				</th>
-                
-				<th>
-					Опции
-				</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.Name)
-					</td>
-                   
-					<td>
-						<a asp-action="Edit" asp-route-id="@item.Id">
-							<button class=" btn btn-success" style="margin-left:5px; margin-right:5px;">
-								<i class="requestEditBtn bi bi-pencil float-left" style="color:white;"></i>
-							</button>
-						</a>
+<div class="page-content">
+    <div class="page-toolbar">
+        <h2>Типове риск</h2>
+        <a asp-action="Add" class="btn btn-primary">Нов тип</a>
+    </div>
 
-						<a asp-action="Delete" asp-route-id="@item.Id">
-							<button class="btn btn-danger">
-								<i class="requestDeleteBtn bi bi-trash3 float-left" style="  color:white;"></i>
-							</button>
-						</a>
-					</td>
-                    
-				</tr>
-			}
-		</tbody>
-	</table>
-
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0 app-table">
+                <thead>
+                    <tr>
+                        <th>Име</th>
+                        <th>Описание</th>
+                        <th class="text-end" style="min-width: 200px;">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="3" class="app-empty">Няма добавени типове риск.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.Name</td>
+                                <td class="text-muted">@item.Description</td>
+                                <td class="text-end">
+                                    @if (item.CanEdit)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Редактирай</a>
+                                    }
+                                    @if (item.CanDelete)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Сигурен ли си?')">Изтрий</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

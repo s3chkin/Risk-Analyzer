@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using RiskAnalyzer.Authorization;
 using RiskAnalyzer.Data;
 using RiskAnalyzer.Data.Models;
 using RiskAnalyzer.Models;
 
 namespace RiskAnalyzer.Controllers
 {
+    [Authorize]
     public class RiskTypesController : Controller
     {
         public readonly ApplicationDbContext db;
@@ -18,8 +22,16 @@ namespace RiskAnalyzer.Controllers
             {
                 Id = rt.Id,
                 Name = rt.Name,
-                Description = rt.Description
+                Description = rt.Description,
+                CreatedByUserId = rt.CreatedByUserId
             }).ToList();
+
+            foreach (var row in riskTypes)
+            {
+                row.CanDelete = DeleteAuthorization.UserMayDelete(User, row.CreatedByUserId);
+                row.CanEdit = DeleteAuthorization.UserMayEdit(User, row.CreatedByUserId);
+            }
+
             return View(riskTypes);
         }
 
@@ -36,7 +48,8 @@ namespace RiskAnalyzer.Controllers
                 var riskType = new RiskType
                 {
                     Name = model.Name,
-                    Description = model.Description
+                    Description = model.Description,
+                    CreatedByUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
                 };
                 db.RiskTypes.Add(riskType);
                 db.SaveChanges();
@@ -52,6 +65,10 @@ namespace RiskAnalyzer.Controllers
             {
                 return NotFound();
             }
+
+            if (!DeleteAuthorization.UserMayEdit(User, riskType.CreatedByUserId))
+                return Forbid();
+
             var model = new InputRiskTypesModel
             {
                 Id = riskType.Id,
@@ -71,6 +88,10 @@ namespace RiskAnalyzer.Controllers
                 {
                     return NotFound();
                 }
+
+                if (!DeleteAuthorization.UserMayEdit(User, riskType.CreatedByUserId))
+                    return Forbid();
+
                 riskType.Name = model.Name;
                 riskType.Description = model.Description;
                 db.SaveChanges();
@@ -78,12 +99,19 @@ namespace RiskAnalyzer.Controllers
             return this.RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id) { 
+        public IActionResult Delete(int id)
+        {
             var riskType = db.RiskTypes.FirstOrDefault(rt => rt.Id == id);
+            if (riskType == null)
+                return RedirectToAction(nameof(Index));
+
+            if (!DeleteAuthorization.UserMayDelete(User, riskType.CreatedByUserId))
+                return Forbid();
+
             db.RiskTypes.Remove(riskType);
             db.SaveChanges();
-            return this.RedirectToAction("Index");
 
+            return RedirectToAction(nameof(Index));
         }
     }
 }

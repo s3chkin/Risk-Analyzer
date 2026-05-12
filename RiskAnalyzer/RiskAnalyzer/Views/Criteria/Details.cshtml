@@ -1,0 +1,26 @@
+@model RiskAnalyzer.Models.InputCriteriaModel
+
+<div class="page-content">
+    <div class="app-form-panel">
+        <div class="card app-card shadow-sm">
+            <div class="card-header app-card__header">
+                <h2 class="h5 mb-0">Критерий</h2>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted">Име</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.Name</dd>
+                    <dt class="col-sm-4 text-muted pt-3">Тежест</dt>
+                    <dd class="col-sm-8 pt-3"><span class="badge bg-secondary">@Model.Weight</span></dd>
+                </dl>
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    @if (Model.CanEdit)
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редактирай</a>
+                    }
+                    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using RiskAnalyzer.Authorization;
 using RiskAnalyzer.Data;
 using RiskAnalyzer.Data.Models;
 using RiskAnalyzer.Models;
 
 namespace RiskAnalyzer.Controllers
 {
+    [Authorize]
     public class CriteriaController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -20,8 +24,15 @@ namespace RiskAnalyzer.Controllers
             {
                 Id = c.Id,
                 Name = c.Name,
-                Weight = c.Weight
+                Weight = c.Weight,
+                CreatedByUserId = c.CreatedByUserId
             }).ToList();
+
+            foreach (var row in model)
+            {
+                row.CanDelete = DeleteAuthorization.UserMayDelete(User, row.CreatedByUserId);
+                row.CanEdit = DeleteAuthorization.UserMayEdit(User, row.CreatedByUserId);
+            }
 
             return View(model);
         }
@@ -34,10 +45,16 @@ namespace RiskAnalyzer.Controllers
         [HttpPost]
         public IActionResult Add(InputCriteriaModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var criterion = new Criteria
             {
                 Name = model.Name,
-                Weight = model.Weight
+                Weight = model.Weight,
+                CreatedByUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
             };
 
             db.Criteria.Add(criterion);
@@ -54,8 +71,16 @@ namespace RiskAnalyzer.Controllers
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    Weight = c.Weight
+                    Weight = c.Weight,
+                    CreatedByUserId = c.CreatedByUserId
                 }).FirstOrDefault();
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            model.CanEdit = DeleteAuthorization.UserMayEdit(User, model.CreatedByUserId);
 
             return View(model);
         }
@@ -64,6 +89,9 @@ namespace RiskAnalyzer.Controllers
         {
             var criterion = db.Criteria.FirstOrDefault(c => c.Id == id);
             if (criterion == null) return NotFound();
+
+            if (!DeleteAuthorization.UserMayEdit(User, criterion.CreatedByUserId))
+                return Forbid();
 
             var model = new InputCriteriaModel
             {
@@ -78,15 +106,25 @@ namespace RiskAnalyzer.Controllers
         [HttpPost]
         public IActionResult Edit(InputCriteriaModel model)
         {
-            var criterion = db.Criteria.FirstOrDefault(c => c.Id == model.Id);
-            if (criterion != null)
+            if (!ModelState.IsValid)
             {
-                criterion.Name = model.Name;
-                criterion.Weight = model.Weight;
-
-                db.Criteria.Update(criterion);
-                db.SaveChanges();
+                return View(model);
             }
+
+            var criterion = db.Criteria.FirstOrDefault(c => c.Id == model.Id);
+            if (criterion == null)
+            {
+                return NotFound();
+            }
+
+            if (!DeleteAuthorization.UserMayEdit(User, criterion.CreatedByUserId))
+                return Forbid();
+
+            criterion.Name = model.Name;
+            criterion.Weight = model.Weight;
+
+            db.Criteria.Update(criterion);
+            db.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -94,12 +132,15 @@ namespace RiskAnalyzer.Controllers
         public IActionResult Delete(int id)
         {
             var criterion = db.Criteria.FirstOrDefault(c => c.Id == id);
-            if (criterion != null)
-            {
-                db.Criteria.Remove(criterion);
-                db.SaveChanges();
-            }
-            return RedirectToAction("Index");
+            if (criterion == null)
+                return RedirectToAction(nameof(Index));
+
+            if (!DeleteAuthorization.UserMayDelete(User, criterion.CreatedByUserId))
+                return Forbid();
+
+            db.Criteria.Remove(criterion);
+            db.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
